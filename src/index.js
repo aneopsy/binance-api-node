@@ -1,8 +1,12 @@
-import httpMethods from 'http-client'
+import spotHttpMethods from 'http-client'
+import marginHttpMethods from 'http-client'
+import futuresHttpMethods from 'http-client'
 import wsMethods from 'websocket'
 
 export default (opts = {}) => ({
-  ...httpMethods(opts),
+  spot: spotHttpMethods(opts),
+  margin: marginHttpMethods(opts),
+  futures: futuresHttpMethods(opts),
   ws: wsMethods(opts),
 })
 
