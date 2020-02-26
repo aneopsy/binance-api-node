@@ -16,29 +16,42 @@ class Futures extends httpMethods {
       tradesHistory: '/fapi/v1/historicalTrades',
       dailyStats: '/fapi/v1/ticker/24hr',
       prices: '/fapi/v1/ticker/allPrices',
-      avgPrice: '/api/v3/avgPrice', //FIXME:
+      avgPrice: '/fapi/v1/avgPrice',
       allBookTickers: '/fapi/v1/ticker/allBookTickers',
       order: '/fapi/v1/order',
-      accountInfo: '/api/v3/account', //FIXME:
-      tradeFee: '/wapi/v3/tradeFee.html', //FIXME:
-      myTrades: '/api/v3/myTrades', //FIXME:
-      allOrders: '/api/v3/allOrders', //FIXME:
-      orderOco: '/api/v3/order/oco', //FIXME:
-      withdraw: '/wapi/v3/withdraw.html', //FIXME:
-      orderTest: '/api/v3/order/test', //FIXME:
+      accountInfo: '/fapi/v1/account',
+      // tradeFee: '/wapi/v3/tradeFee.html', //FIXME:
+      // myTrades: '/api/v3/myTrades', //FIXME:
+      // allOrders: '/api/v3/allOrders', //FIXME:
+      // orderOco: '/api/v3/order/oco', //FIXME:
+      // withdraw: '/wapi/v3/withdraw.html', //FIXME:
+      // orderTest: '/api/v3/order/test', //FIXME:
       getOrder: '/fapi/v1/order',
       cancelOrder: '/fapi/v1/order',
       openOrders: '/fapi/v1/openOrders',
       positionRisk: '/fapi/v1/positionRisk',
       fundingRate: '/fapi/v1/fundingRate',
-      withdrawHistory: '/wapi/v3/withdrawHistory.html', //FIXME:
-      depositHistory: '/wapi/v3/depositHistory.html', //FIXME:
-      depositAddress: '/wapi/v3/depositAddress.html', //FIXME:
-      assetDetail: '/wapi/v3/assetDetail.html', //FIXME:
-      getDataStream: '/api/v1/userDataStream', //FIXME:
-      keepDataStream: '/api/v1/userDataStream', //FIXME:
-      closeDataStream: '/api/v1/userDataStream', //FIXME:
+      openInterest: '/fapi/v1/openInterest',
+      leverageBracket: '/fapi/v1/leverageBracket',
+      // withdrawHistory: '/wapi/v3/withdrawHistory.html', //FIXME:
+      // depositHistory: '/wapi/v3/depositHistory.html', //FIXME:
+      // depositAddress: '/wapi/v3/depositAddress.html', //FIXME:
+      // assetDetail: '/wapi/v3/assetDetail.html', //FIXME:
+      // getDataStream: '/api/v1/userDataStream', //FIXME:
+      // keepDataStream: '/api/v1/userDataStream', //FIXME:
+      // closeDataStream: '/api/v1/userDataStream', //FIXME:
     }
+  }
+
+  openInterest(payload) {
+    return (
+      this.checkParams('openInterest', payload, ['symbol']) &&
+      this.publicCall(this.endpoint.openInterest, payload)
+    )
+  }
+
+  leverageBracket(payload) {
+    return this.publicCall(this.endpoint.leverageBracket, payload)
   }
 
   markPrice(payload) {

@@ -473,3 +473,16 @@ test('[FUTURES-REST] fundingRate', async t => {
   checkFields(t, fundingRate[0], ['symbol', 'fundingTime', 'fundingRate'])
   t.is(fundingRate.length, 100)
 })
+
+test('[FUTURES-REST] openInterest', async t => {
+  const openInterest = await client.futures.openInterest({ symbol: 'BTCUSDT' })
+  checkFields(t, openInterest, ['symbol', 'openInterest'])
+  t.truthy(typeof openInterest.openInterest === 'string')
+})
+
+// test('[FUTURES-REST] leverageBracket', async t => {
+//   const leverageBracket = await client.futures.leverageBracket()
+//   console.log(leverageBracket)
+//   checkFields(t, leverageBracket, ['symbol', 'openInterest'])
+//   t.truthy(typeof leverageBracket.openInterest === 'string')
+// })
