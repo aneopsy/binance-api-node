@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import zip from 'lodash.zipobject'
+import wsMethods from 'websocket'
 
 import 'isomorphic-fetch'
 
@@ -24,6 +25,7 @@ class HttpClient {
     this.urlBase = httpBase
     this.apiKey = apiKey
     this.apiSecret = apiSecret
+    this.ws = wsMethods({ httpBase, apiKey, apiSecret })
   }
 
   defaultGetTime() {

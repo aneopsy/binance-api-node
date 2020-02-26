@@ -1,13 +1,11 @@
 import spotHttpMethods from 'spot-http-client'
+import futuresHttpMethods from 'futures-http-client'
 // import marginHttpMethods from 'http-client'
-// import futuresHttpMethods from 'http-client'
-import wsMethods from 'websocket'
 
 export default (opts = {}) => ({
   spot: new spotHttpMethods(opts),
+  futures: new futuresHttpMethods(opts),
   // margin: marginHttpMethods(opts),
-  // futures: futuresHttpMethods(opts),
-  ws: wsMethods(opts),
 })
 
 export const ErrorCodes = {
