@@ -14,33 +14,33 @@ test('[MISC] Some error codes are defined', t => {
 })
 
 test('[REST] ping', async t => {
-  t.truthy(await client.ping(), 'A simple ping should work')
+  t.truthy(await client.spot.ping(), 'A simple ping should work')
 })
 
 test('[REST] time', async t => {
-  const ts = await client.time()
+  const ts = await client.spot.time()
   t.truthy(new Date(ts).getTime() > 0, 'The returned timestamp should be valid')
 })
 
 test('[REST] exchangeInfo', async t => {
-  const res = await client.exchangeInfo()
+  const res = await client.spot.exchangeInfo()
   checkFields(t, res, ['timezone', 'serverTime', 'rateLimits', 'symbols'])
 })
 
 test('[REST] book', async t => {
   try {
-    await client.book()
+    await client.spot.book()
   } catch (e) {
     t.is(e.message, 'You need to pass a payload object.')
   }
 
   try {
-    await client.book({})
+    await client.spot.book({})
   } catch (e) {
     t.is(e.message, 'Method book requires symbol parameter.')
   }
 
-  const book = await client.book({ symbol: 'ETHBTC' })
+  const book = await client.spot.book({ symbol: 'ETHBTC' })
   t.truthy(book.lastUpdateId)
   t.truthy(book.asks.length)
   t.truthy(book.bids.length)
@@ -52,12 +52,12 @@ test('[REST] book', async t => {
 
 test('[REST] candles', async t => {
   try {
-    await client.candles({})
+    await client.spot.candles({})
   } catch (e) {
     t.is(e.message, 'Method candles requires symbol parameter.')
   }
 
-  const candles = await client.candles({ symbol: 'ETHBTC' })
+  const candles = await client.spot.candles({ symbol: 'ETHBTC' })
 
   t.truthy(candles.length)
 
@@ -67,12 +67,12 @@ test('[REST] candles', async t => {
 
 test('[REST] aggTrades', async t => {
   try {
-    await client.aggTrades({})
+    await client.spot.aggTrades({})
   } catch (e) {
     t.is(e.message, 'Method aggTrades requires symbol parameter.')
   }
 
-  const trades = await client.aggTrades({ symbol: 'ETHBTC' })
+  const trades = await client.spot.aggTrades({ symbol: 'ETHBTC' })
   t.truthy(trades.length)
 
   const [trade] = trades
@@ -80,37 +80,37 @@ test('[REST] aggTrades', async t => {
 })
 
 test('[REST] trades', async t => {
-  const trades = await client.trades({ symbol: 'ETHBTC' })
+  const trades = await client.spot.trades({ symbol: 'ETHBTC' })
   t.is(trades.length, 500)
 })
 
 test('[REST] dailyStats', async t => {
-  const res = await client.dailyStats({ symbol: 'ETHBTC' })
+  const res = await client.spot.dailyStats({ symbol: 'ETHBTC' })
   t.truthy(res)
   checkFields(t, res, ['highPrice', 'lowPrice', 'volume', 'priceChange'])
 })
 
 test('[REST] prices', async t => {
-  const prices = await client.prices()
+  const prices = await client.spot.prices()
   t.truthy(prices)
   t.truthy(prices.ETHBTC)
 })
 
 test('[REST] avgPrice', async t => {
-  const res = await client.avgPrice({ symbol: 'ETHBTC' })
+  const res = await client.spot.avgPrice({ symbol: 'ETHBTC' })
   t.truthy(res)
   checkFields(t, res, ['mins', 'price'])
 })
 
 test('[REST] allBookTickers', async t => {
-  const tickers = await client.allBookTickers()
+  const tickers = await client.spot.allBookTickers()
   t.truthy(tickers)
   t.truthy(tickers.ETHBTC)
 })
 
 test('[REST] Signed call without creds', async t => {
   try {
-    await client.accountInfo()
+    await client.spot.accountInfo()
   } catch (e) {
     t.is(e.message, 'You need to pass an API key and secret to make authenticated calls.')
   }
@@ -118,7 +118,7 @@ test('[REST] Signed call without creds', async t => {
 
 test('[REST] Signed call without creds - attempt getting tradeFee', async t => {
   try {
-    await client.tradeFee()
+    await client.spot.tradeFee()
   } catch (e) {
     t.is(e.message, 'You need to pass an API key and secret to make authenticated calls.')
   }
@@ -139,7 +139,7 @@ test('[REST] Server-side JSON error', async t => {
 
   try {
     await server.start()
-    await localClient.ping()
+    await localClient.spot.ping()
     t.fail('did not throw')
   } catch (e) {
     t.is(e.message, 'Server unkown error')
@@ -160,7 +160,7 @@ test('[REST] Server-side HTML error', async t => {
 
   try {
     await server.start()
-    await localClient.ping()
+    await localClient.spot.ping()
     t.fail('did not throw')
   } catch (e) {
     t.is(e.message, `500 Internal Server Error ${serverReponse}`)
@@ -450,123 +450,123 @@ test('[WS] userEvents', t => {
   })({ data: JSON.stringify(newEvent) })
 })
 
-// FUTURES TESTS
+// // FUTURES TESTS
 
-test('[FUTURES-REST] ping', async t => {
-  t.truthy(await client.futuresPing(), 'A simple ping should work')
-})
+// test('[FUTURES-REST] ping', async t => {
+//   t.truthy(await client.futuresPing(), 'A simple ping should work')
+// })
 
-test('[FUTURES-REST] time', async t => {
-  const ts = await client.futuresTime()
-  t.truthy(new Date(ts).getTime() > 0, 'The returned timestamp should be valid')
-})
+// test('[FUTURES-REST] time', async t => {
+//   const ts = await client.futuresTime()
+//   t.truthy(new Date(ts).getTime() > 0, 'The returned timestamp should be valid')
+// })
 
-test('[FUTURES-REST] exchangeInfo', async t => {
-  const res = await client.futuresExchangeInfo()
-  checkFields(t, res, ['timezone', 'serverTime', 'rateLimits', 'symbols'])
-})
+// test('[FUTURES-REST] exchangeInfo', async t => {
+//   const res = await client.futuresExchangeInfo()
+//   checkFields(t, res, ['timezone', 'serverTime', 'rateLimits', 'symbols'])
+// })
 
-test('[FUTURES-REST] book', async t => {
-  try {
-    await client.futuresBook()
-  } catch (e) {
-    t.is(e.message, 'You need to pass a payload object.')
-  }
+// test('[FUTURES-REST] book', async t => {
+//   try {
+//     await client.futuresBook()
+//   } catch (e) {
+//     t.is(e.message, 'You need to pass a payload object.')
+//   }
 
-  try {
-    await client.futuresBook({})
-  } catch (e) {
-    t.is(e.message, 'Method book requires symbol parameter.')
-  }
+//   try {
+//     await client.futuresBook({})
+//   } catch (e) {
+//     t.is(e.message, 'Method book requires symbol parameter.')
+//   }
 
-  const book = await client.futuresBook({ symbol: 'BTCUSDT' })
-  t.truthy(book.lastUpdateId)
-  t.truthy(book.asks.length)
-  t.truthy(book.bids.length)
+//   const book = await client.futuresBook({ symbol: 'BTCUSDT' })
+//   t.truthy(book.lastUpdateId)
+//   t.truthy(book.asks.length)
+//   t.truthy(book.bids.length)
 
-  const [bid] = book.bids
-  t.truthy(typeof bid.price === 'string')
-  t.truthy(typeof bid.quantity === 'string')
-})
+//   const [bid] = book.bids
+//   t.truthy(typeof bid.price === 'string')
+//   t.truthy(typeof bid.quantity === 'string')
+// })
 
-test('[FUTURES-REST] markPrice', async t => {
-  const res = await client.futuresMarkPrice()
-  t.truthy(Array.isArray(res))
-  checkFields(t, res[0], ['symbol', 'markPrice', 'lastFundingRate', 'nextFundingTime', 'time'])
-})
+// test('[FUTURES-REST] markPrice', async t => {
+//   const res = await client.futuresMarkPrice()
+//   t.truthy(Array.isArray(res))
+//   checkFields(t, res[0], ['symbol', 'markPrice', 'lastFundingRate', 'nextFundingTime', 'time'])
+// })
 
-test('[FUTURES-REST] allForceOrders', async t => {
-  const res = await client.futuresAllForceOrders()
-  t.truthy(Array.isArray(res))
-  t.truthy(res.length === 100)
-  checkFields(t, res[0], [
-    'symbol',
-    'price',
-    'origQty',
-    'executedQty',
-    'averagePrice',
-    'timeInForce',
-    'type',
-    'side',
-    'time',
-  ])
-})
+// test('[FUTURES-REST] allForceOrders', async t => {
+//   const res = await client.futuresAllForceOrders()
+//   t.truthy(Array.isArray(res))
+//   t.truthy(res.length === 100)
+//   checkFields(t, res[0], [
+//     'symbol',
+//     'price',
+//     'origQty',
+//     'executedQty',
+//     'averagePrice',
+//     'timeInForce',
+//     'type',
+//     'side',
+//     'time',
+//   ])
+// })
 
-test('[FUTURES-REST] candles', async t => {
-  try {
-    await client.futuresCandles({})
-  } catch (e) {
-    t.is(e.message, 'Method candles requires symbol parameter.')
-  }
+// test('[FUTURES-REST] candles', async t => {
+//   try {
+//     await client.futuresCandles({})
+//   } catch (e) {
+//     t.is(e.message, 'Method candles requires symbol parameter.')
+//   }
 
-  const candles = await client.candles({ symbol: 'BTCUSDT' })
+//   const candles = await client.candles({ symbol: 'BTCUSDT' })
 
-  t.truthy(candles.length)
+//   t.truthy(candles.length)
 
-  const [candle] = candles
-  checkFields(t, candle, candleFields)
-})
+//   const [candle] = candles
+//   checkFields(t, candle, candleFields)
+// })
 
-test('[FUTURES-REST] trades', async t => {
-  const trades = await client.futuresTrades({ symbol: 'BTCUSDT', limit: 10 })
-  t.is(trades.length, 10)
-  checkFields(t, trades[0], ['id', 'price', 'qty', 'quoteQty', 'time'])
-})
+// test('[FUTURES-REST] trades', async t => {
+//   const trades = await client.futuresTrades({ symbol: 'BTCUSDT', limit: 10 })
+//   t.is(trades.length, 10)
+//   checkFields(t, trades[0], ['id', 'price', 'qty', 'quoteQty', 'time'])
+// })
 
-test('[FUTURES-REST] dailyStats', async t => {
-  const res = await client.futuresDailyStats({ symbol: 'BTCUSDT' })
-  t.truthy(res)
-  checkFields(t, res, ['highPrice', 'lowPrice', 'volume', 'priceChange'])
-})
+// test('[FUTURES-REST] dailyStats', async t => {
+//   const res = await client.futuresDailyStats({ symbol: 'BTCUSDT' })
+//   t.truthy(res)
+//   checkFields(t, res, ['highPrice', 'lowPrice', 'volume', 'priceChange'])
+// })
 
-test('[FUTURES-REST] prices', async t => {
-  const prices = await client.futuresPrices()
-  t.truthy(prices)
-  t.truthy(prices.BTCUSDT)
-})
+// test('[FUTURES-REST] prices', async t => {
+//   const prices = await client.futuresPrices()
+//   t.truthy(prices)
+//   t.truthy(prices.BTCUSDT)
+// })
 
-test('[FUTURES-REST] allBookTickers', async t => {
-  const tickers = await client.futuresAllBookTickers()
-  t.truthy(tickers)
-  t.truthy(tickers.BTCUSDT)
-})
+// test('[FUTURES-REST] allBookTickers', async t => {
+//   const tickers = await client.futuresAllBookTickers()
+//   t.truthy(tickers)
+//   t.truthy(tickers.BTCUSDT)
+// })
 
-test('[FUTURES-REST] aggTrades', async t => {
-  try {
-    await client.futuresAggTrades({})
-  } catch (e) {
-    t.is(e.message, 'Method aggTrades requires symbol parameter.')
-  }
+// test('[FUTURES-REST] aggTrades', async t => {
+//   try {
+//     await client.futuresAggTrades({})
+//   } catch (e) {
+//     t.is(e.message, 'Method aggTrades requires symbol parameter.')
+//   }
 
-  const trades = await client.futuresAggTrades({ symbol: 'BTCUSDT' })
-  t.truthy(trades.length)
+//   const trades = await client.futuresAggTrades({ symbol: 'BTCUSDT' })
+//   t.truthy(trades.length)
 
-  const [trade] = trades
-  t.truthy(trade.aggId)
-})
+//   const [trade] = trades
+//   t.truthy(trade.aggId)
+// })
 
-test('[FUTURES-REST] fundingRate', async t => {
-  const fundingRate = await client.futuresFundingRate({ symbol: 'BTCUSDT' })
-  checkFields(t, fundingRate[0], ['symbol', 'fundingTime', 'fundingRate'])
-  t.is(fundingRate.length, 100)
-})
+// test('[FUTURES-REST] fundingRate', async t => {
+//   const fundingRate = await client.futuresFundingRate({ symbol: 'BTCUSDT' })
+//   checkFields(t, fundingRate[0], ['symbol', 'fundingTime', 'fundingRate'])
+//   t.is(fundingRate.length, 100)
+// })
